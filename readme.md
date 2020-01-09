@@ -194,8 +194,185 @@ Script done on Ср 08 янв 2020 16:00:57
 
 
 # --------------------------------------------------------
+[vagrant@centos ~]$ wget https://nginx.org/packages/centos/7/SRPMS/nginx-1.14.1-1.el7_4.ngx.src.rpm
+--2020-01-09 16:53:54--  https://nginx.org/packages/centos/7/SRPMS/nginx-1.14.1-1.el7_4.ngx.src.rpm
+Resolving nginx.org (nginx.org)... 95.211.80.227, 62.210.92.35, 2001:1af8:4060:a004:21::e3
+Connecting to nginx.org (nginx.org)|95.211.80.227|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 1033399 (1009K) [application/x-redhat-package-manager]
+Saving to: ‘nginx-1.14.1-1.el7_4.ngx.src.rpm’
+
+100%[======================================>] 1 033 399    232KB/s   in 4,4s   
+
+2020-01-09 16:53:59 (232 KB/s) - ‘nginx-1.14.1-1.el7_4.ngx.src.rpm’ saved [1033399/1033399]
+
+[vagrant@centos ~]$ ls
+nginx-1.14.1-1.el7_4.ngx.src.rpm
+[vagrant@centos ~]$ rpm -i nginx-1.14.1-1.el7_4.ngx.src.rpm
+warning: nginx-1.14.1-1.el7_4.ngx.src.rpm: Header V4 RSA/SHA1 Signature, key ID 7bd9bf62: NOKEY
+warning: user builder does not exist - using root
+warning: group builder does not exist - using root
+warning: user builder does not exist - using root
+warning: group builder does not exist - using root
+warning: user builder does not exist - using root
+warning: group builder does not exist - using root
+warning: user builder does not exist - using root
+warning: group builder does not exist - using root
+warning: user builder does not exist - using root
+warning: group builder does not exist - using root
+warning: user builder does not exist - using root
+warning: group builder does not exist - using root
+warning: user builder does not exist - using root
+warning: group builder does not exist - using root
+warning: user builder does not exist - using root
+warning: group builder does not exist - using root
+warning: user builder does not exist - using root
+warning: group builder does not exist - using root
+warning: user builder does not exist - using root
+warning: group builder does not exist - using root
+warning: user builder does not exist - using root
+warning: group builder does not exist - using root
+warning: user builder does not exist - using root
+warning: group builder does not exist - using root
+warning: user builder does not exist - using root
+warning: group builder does not exist - using root
+warning: user builder does not exist - using root
+warning: group builder does not exist - using root
+[vagrant@centos ~]$ 
+[vagrant@centos ~]$ 
+[vagrant@centos ~]$ ls
+nginx-1.14.1-1.el7_4.ngx.src.rpm  rpmbuild
+[vagrant@centos ~]$ ll rpmbuild
+total 4
+drwxr-xr-x. 2 vagrant vagrant 4096 янв  9 16:54 SOURCES
+drwxr-xr-x. 2 vagrant vagrant   24 янв  9 16:54 SPECS
+[vagrant@centos ~]$ mkdir rpmbuild/BUILD
+[vagrant@centos ~]$ ll rpmbuild
+total 4
+drwxrwxr-x. 2 vagrant vagrant    6 янв  9 16:55 BUILD
+drwxr-xr-x. 2 vagrant vagrant 4096 янв  9 16:54 SOURCES
+drwxr-xr-x. 2 vagrant vagrant   24 янв  9 16:54 SPECS
+[vagrant@centos ~]$ mkdir rpmbuild/BUILDROOT
+[vagrant@centos ~]$ mkdir rpmbuild/RPMS
+[vagrant@centos ~]$ mkdir rpmbuild/SRPMS
+[vagrant@centos ~]$ ll rpmbuild
+total 4
+drwxrwxr-x. 2 vagrant vagrant    6 янв  9 16:55 BUILD
+drwxrwxr-x. 2 vagrant vagrant    6 янв  9 16:56 BUILDROOT
+drwxrwxr-x. 2 vagrant vagrant    6 янв  9 16:56 RPMS
+drwxr-xr-x. 2 vagrant vagrant 4096 янв  9 16:54 SOURCES
+drwxr-xr-x. 2 vagrant vagrant   24 янв  9 16:54 SPECS
+drwxrwxr-x. 2 vagrant vagrant    6 янв  9 16:56 SRPMS
+[vagrant@centos ~]$ 
 
 
+
+[vagrant@centos ~]$ wget https://www.openssl.org/source/latest.tar.gz
+--2020-01-09 17:33:47--  https://www.openssl.org/source/latest.tar.gz
+Resolving www.openssl.org (www.openssl.org)... 104.92.90.148, 2a02:26f0:e2:19b::c1e, 2a02:26f0:e2:190::c1e
+Connecting to www.openssl.org (www.openssl.org)|104.92.90.148|:443... connected.
+HTTP request sent, awaiting response... 302 Moved Temporarily
+Location: https://www.openssl.org/source/openssl-1.1.1d.tar.gz [following]
+--2020-01-09 17:33:48--  https://www.openssl.org/source/openssl-1.1.1d.tar.gz
+Reusing existing connection to www.openssl.org:443.
+HTTP request sent, awaiting response... 200 OK
+Length: 8845861 (8,4M) [application/x-gzip]
+Saving to: ‘latest.tar.gz’
+
+100%[======================================>] 8 845 861   5,12MB/s   in 1,6s   
+
+2020-01-09 17:33:50 (5,12 MB/s) - ‘latest.tar.gz’ saved [8845861/8845861]
+
+[vagrant@centos ~]$ ls
+latest.tar.gz  nginx-1.14.1-1.el7_4.ngx.src.rpm  rpmbuild
+[vagrant@centos ~]$ 
+
+
+
+
+[vagrant@centos ~]$ tar -xvf latest.tar.gz
+openssl-1.1.1d/
+openssl-1.1.1d/ACKNOWLEDGEMENTS
+openssl-1.1.1d/AUTHORS
+openssl-1.1.1d/CHANGES
+...
+openssl-1.1.1d/util/process_docs.pl
+openssl-1.1.1d/util/shlib_wrap.sh.in
+openssl-1.1.1d/util/su-filter.pl
+openssl-1.1.1d/util/unlocal_shlib.com.in
+[vagrant@centos ~]$ ls
+
+
+
+
+# --------------------------------------------------------
+[vagrant@centos ~]$ sudo yum-builddep rpmbuild/SPECS/nginx.spec
+Loaded plugins: fastestmirror
+Enabling base-source repository
+Enabling docker-ce-stable-source repository
+Enabling epel-source repository
+Enabling extras-source repository
+Enabling updates-source repository
+Loading mirror speeds from cached hostfile
+epel/x86_64/metalink                                     |  25 kB     00:00     
+epel-source/x86_64/metalink                              |  24 kB     00:00     
+ * base: dedic.sh
+ * epel: ftp.lysator.liu.se
+ * epel-source: ftp.lysator.liu.se
+ * extras: dedic.sh
+ * updates: dedic.sh
+base                                                     | 3.6 kB     00:00     
+base-source                                              | 2.9 kB     00:00     
+docker-ce-stable                                         | 3.5 kB     00:00     
+docker-ce-stable-source                                  | 3.5 kB     00:00     
+epel                                                     | 5.3 kB     00:00     
+epel-source                                              | 4.1 kB     00:00     
+extras                                                   | 2.9 kB     00:00     
+extras-source                                            | 2.9 kB     00:00     
+updates                                                  | 2.9 kB     00:00     
+updates-source                                           | 2.9 kB     00:00     
+(1/4): epel-source/x86_64/updateinfo                       | 1.0 MB   00:01     
+(2/4): epel/x86_64/updateinfo                              | 1.0 MB   00:01     
+(3/4): epel-source/x86_64/primary_db                       | 2.4 MB   00:02     
+(4/4): epel/x86_64/primary_db                              | 6.9 MB   00:05     
+Checking for new repos for mirrors
+Getting requirements for rpmbuild/SPECS/nginx.spec
+ --> Already installed : redhat-lsb-core-4.1-27.el7.centos.1.x86_64
+ --> Already installed : systemd-219-62.el7_6.6.x86_64
+ --> Already installed : 1:openssl-devel-1.0.2k-19.el7.x86_64
+ --> Already installed : zlib-devel-1.2.7-18.el7.x86_64
+ --> Already installed : pcre-devel-8.32-17.el7.x86_64
+No uninstalled build requires
+[vagrant@centos ~]$ 
+
+# --------------------------------------------------------
+[vagrant@centos ~]$ vi rpmbuild/SPECS/nginx.spec
+
+./configure %{BASE_CONFIGURE_ARGS} \
+    --with-cc-opt="%{WITH_CC_OPT}" \
+    --with-ld-opt="%{WITH_LD_OPT}" \
+    --with-openssl=/home/vagrant/openssl-1.1.1d
+
+# --------------------------------------------------------
+
+[vagrant@centos ~]$ rpmbuild -bb rpmbuild/SPECS/nginx.spec
+...
+Executing(%clean): /bin/sh -e /var/tmp/rpm-tmp.JAg1Bm
++ umask 022
++ cd /home/vagrant/rpmbuild/BUILD
++ cd nginx-1.14.1
++ /usr/bin/rm -rf /home/vagrant/rpmbuild/BUILDROOT/nginx-1.14.1-1.el7_4.ngx.x86_64
++ exit 0
+
+
+[vagrant@centos ~]$ ll rpmbuild/RPMS/x86_64/
+total 4736
+-rw-rw-r--. 1 vagrant vagrant 2315012 янв  9 18:10 nginx-1.14.1-1.el7_4.ngx.x86_64.rpm
+-rw-rw-r--. 1 vagrant vagrant 2529284 янв  9 18:10 nginx-debuginfo-1.14.1-1.el7_4.ngx.x86_64.rpm
+[vagrant@centos ~]$ 
+
+# --------------------------------------------------------
+# --------------------------------------------------------
 # --------------------------------------------------------
 # --------------------------------------------------------
 # --------------------------------------------------------
