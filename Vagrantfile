@@ -68,9 +68,12 @@ mkdir rpmbuild/SRPMS
 #rpmdev-setuptree
 wget https://www.openssl.org/source/latest.tar.gz
 tar -xvf latest.tar.gz
-sudo yum-builddep -y rpmbuild/SPECS/nginx.spec
-sudo rm rpmbuild/SPECS/nginx.spec
+
 sudo cp /vagrant/nginx.spec rpmbuild/SPECS/
+sudo yum-builddep -y rpmbuild/SPECS/nginx.spec
+#sudo rm rpmbuild/SPECS/nginx.spec
+#sudo cp /vagrant/nginx.spec rpmbuild/SPECS/
+
 rpmbuild -bb rpmbuild/SPECS/nginx.spec
 sudo yum localinstall -y rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm
 sudo systemctl start nginx
