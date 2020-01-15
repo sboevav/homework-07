@@ -53,6 +53,7 @@ Vagrant.configure("2") do |config|
            yum install docker-ce docker-compose -y -q
            systemctl start docker
            docker run hello-world
+
 # main homework
 
 wget https://nginx.org/packages/centos/7/SRPMS/nginx-1.14.1-1.el7_4.ngx.src.rpm
@@ -61,8 +62,19 @@ wget https://www.openssl.org/source/latest.tar.gz
 tar -xvf latest.tar.gz
 sudo yum-builddep -y rpmbuild/SPECS/nginx.spec
 sudo rm rpmbuild/SPECS/nginx.spec
-sudo cp /vagrant/nginx.spec rpmbuild/SPECS/nginx.spec
+sudo cp /vagrant/nginx.spec rpmbuild/SPECS/
 rpmbuild -bb rpmbuild/SPECS/nginx.spec
+sudo yum localinstall -y rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm
+sudo systemctl start nginx
+sudo mkdir /usr/share/nginx/html/repo
+sudo cp rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm /usr/share/nginx/html/repo/
+sudo wget http://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm -O /usr/share/nginx/html/repo/percona-release-0.1-6.noarch.rpm
+sudo createrepo /usr/share/nginx/html/repo/
+sudo rm /etc/nginx/conf.d/default.conf
+sudo cp /vagrant/default.conf /etc/nginx/conf.d/
+sudo nginx -s reload
+sudo cp /vagrant/otus.repo /etc/yum.repos.d/
+sudo yum install percona-release -y
 
       SHELL
 

@@ -443,9 +443,6 @@
 	```
 23. Выполним установку пакета percona-release и убедимся, что устанавливается из нашего репозитория otus
 	```bash	
-	[vagrant@centos ~]$ yum install percona-release -y
-	Loaded plugins: fastestmirror
-	You need to be root to perform this command.
 	[vagrant@centos ~]$ sudo yum install percona-release -y
 	Loaded plugins: fastestmirror
 	Loading mirror speeds from cached hostfile
