@@ -2,9 +2,9 @@
 # Установка пакетов
 
 1. Доустановим необходимые для работы пакеты  (redhat-lsb-core, wget, rpmdevtools, rpm-build, createrepo, yum-utils)
-		[vagrant@centos ~]$ sudo su  
-		[root@centos vagrant]# yum install -y redhat-lsb-core  
 	```bash	
+	[vagrant@centos ~]$ sudo su  
+	[root@centos vagrant]# yum install -y redhat-lsb-core  
 	...
 	Installed:
 	  redhat-lsb-core.x86_64 0:4.1-27.el7.centos.1                                  
@@ -25,8 +25,7 @@
 
 	Complete!
 	```
-Как оказалось остальные пакеты уже предустановлены при развертывании вагранта  
-  
+2. Как оказалось остальные пакеты уже предустановлены при развертывании вагранта  
 	```bash	
 	[vagrant@centos ~]$ sudo yum install -y wget
 	Loaded plugins: fastestmirror
