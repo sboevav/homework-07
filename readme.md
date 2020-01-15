@@ -94,7 +94,7 @@
 	nginx-1.14.1-1.el7_4.ngx.src.rpm
 	```
 
-4. Действия ниже нужно выполнять от обычного пользователя, не от root, это очень важный момент! Создадим командой rpmdev-setuptree каталог rpmbuild со следующими подкаталогами:  
+4. Действия по сборке пакета нужно выполнять от обычного пользователя, не от root, это очень важный момент! Гугль жутко не советует собирать пакеты под рутом, т.к. потом могут появиться проблемы при установке пакетов. Создадим командой rpmdev-setuptree каталог rpmbuild со следующими подкаталогами:  
 	```bash	
 	+ rpmbuild
 		-BUILD  
@@ -113,7 +113,7 @@
 	drwxrwxr-x. 2 vagrant vagrant 6 янв 15 15:43 SRPMS
 	```
 
-5. Скачаем и разархивируем последние исходники для openssl, которые потребуеются нам при сборке  
+5. Скачаем и разархивируем последние исходники для openssl, которые потребуются нам при сборке  
 	```bash	
 	[vagrant@centos ~]$ wget https://www.openssl.org/source/latest.tar.gz
 	--2020-01-09 17:33:47--  https://www.openssl.org/source/latest.tar.gz
@@ -214,7 +214,7 @@
 	-rw-rw-r--. 1 vagrant vagrant 2529284 янв  9 18:10 nginx-debuginfo-1.14.1-1.el7_4.ngx.x86_64.rpm
 	```
 
-9. Теперь установим созданный пакет (Примечание - оказалось, что при развертывании вагранта автоматически устанавливался nginx, поэтому предварительно пришлось его удалить)  
+9. Теперь установим созданный пакет от имени привилегированного пользователя (Примечание - оказалось, что при развертывании вагранта автоматически устанавливался nginx, поэтому предварительно пришлось его удалить)  
 	```bash	
 	[vagrant@centos ~]$ sudo yum localinstall -y rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm
 	Loaded plugins: fastestmirror
@@ -298,7 +298,7 @@
 	50x.html  icons  index.html  poweredby.png
 	```
 
-12. Скопируем в созданный каталого наш созданный RPM пакет nginx
+12. Скопируем в созданный каталог наш созданный RPM пакет nginx
 	```bash	
 	[vagrant@centos ~]$ sudo cp rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm /usr/share/nginx/html/repo/
 	```
@@ -320,87 +320,92 @@
 	100%[======================================>] 14 520      --.-K/s   in 0,1s    
 
 	2020-01-11 16:45:18 (97,7 KB/s) - ‘/usr/share/nginx/html/repo/percona-release-0.1-6.noarch.rpm’ saved [14520/14520]
-
+	```
+14. Проверим, что оба пакета на месте
+	```bash	
 	[vagrant@centos ~]$ ls /usr/share/nginx/html/repo
 	nginx-1.14.1-1.el7_4.ngx.x86_64.rpm  percona-release-0.1-6.noarch.rpm
 	```
+15. Создадим репозиторий. Эта часть уже делается от более привилегированного пользователя
+	```bash	
+	[vagrant@centos ~]$ sudo createrepo /usr/share/nginx/html/repo/
+	Spawning worker 0 with 2 pkgs
+	Workers Finished
+	Saving Primary metadata
+	Saving file lists metadata
+	Saving other metadata
+	Generating sqlite DBs
+	Sqlite DBs complete
+	```
+16. Сначала убедимся что доступ к листингу каталога в NGINX отключен
+	```bash	
+	[vagrant@centos ~]$ curl -a http://localhost/repo/
+	<html>
+	<head><title>403 Forbidden</title></head>
+	<body>
+	<center><h1>403 Forbidden</h1></center>
+	<hr><center>nginx/1.16.1</center>
+	</body>
+	</html>
+	```
+17. Теперь настроим доступ к листингу каталога в NGINX, изменив файл конфигурации по-умолчанию
+	```bash	
+	[vagrant@centos ~]$ sudo vi /etc/nginx/conf.d/default.conf 
+	[vagrant@centos ~]$ cat /etc/nginx/conf.d/default.conf 
+	server {
+	    listen       80;
+	    server_name  localhost;
 
+	    #charset koi8-r;
+	    #access_log  /var/log/nginx/host.access.log  main;
 
-# --------------------------------------------------------
-[vagrant@centos ~]$ sudo createrepo /usr/share/nginx/html/repo/
-Spawning worker 0 with 2 pkgs
-Workers Finished
-Saving Primary metadata
-Saving file lists metadata
-Saving other metadata
-Generating sqlite DBs
-Sqlite DBs complete
-[vagrant@centos ~]$ 
-# --------------------------------------------------------
+	    location / {
+		root   /usr/share/nginx/html;
+		index  index.html index.htm;
+		autoindex on;
+	    }
 
-[vagrant@centos ~]$ curl -a http://localhost/repo/
-<html>
-<head><title>403 Forbidden</title></head>
-<body>
-<center><h1>403 Forbidden</h1></center>
-<hr><center>nginx/1.16.1</center>
-</body>
-</html>
+	    #error_page  404              /404.html;
 
-[vagrant@centos ~]$ sudo vi /etc/nginx/conf.d/default.conf 
-[vagrant@centos ~]$ cat /etc/nginx/conf.d/default.conf 
-server {
-    listen       80;
-    server_name  localhost;
+	    # redirect server error pages to the static page /50x.html
+	    #
+	    error_page   500 502 503 504  /50x.html;
+	    location = /50x.html {
+		root   /usr/share/nginx/html;
+	    }
 
-    #charset koi8-r;
-    #access_log  /var/log/nginx/host.access.log  main;
+	    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+	    #
+	    #location ~ \.php$ {
+	    #    proxy_pass   http://127.0.0.1;
+	    #}
 
-    location / {
-        root   /usr/share/nginx/html;
-        index  index.html index.htm;
-	autoindex on;
-    }
+	    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+	    #
+	    #location ~ \.php$ {
+	    #    root           html;
+	    #    fastcgi_pass   127.0.0.1:9000;
+	    #    fastcgi_index  index.php;
+	    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+	    #    include        fastcgi_params;
+	    #}
 
-    #error_page  404              /404.html;
+	    # deny access to .htaccess files, if Apache's document root
+	    # concurs with nginx's one
+	    #
+	    #location ~ /\.ht {
+	    #    deny  all;
+	    #}
+	}
+	```
+18. Проверим, что синтаксис файла конфигурации правильный, после чего перезапустим NGINX
+	```bash	
+	[vagrant@centos ~]$ sudo nginx -t
+	nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+	nginx: configuration file /etc/nginx/nginx.conf test is successful
 
-    # redirect server error pages to the static page /50x.html
-    #
-    error_page   500 502 503 504  /50x.html;
-    location = /50x.html {
-        root   /usr/share/nginx/html;
-    }
-
-    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
-    #
-    #location ~ \.php$ {
-    #    proxy_pass   http://127.0.0.1;
-    #}
-
-    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-    #
-    #location ~ \.php$ {
-    #    root           html;
-    #    fastcgi_pass   127.0.0.1:9000;
-    #    fastcgi_index  index.php;
-    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
-    #    include        fastcgi_params;
-    #}
-
-    # deny access to .htaccess files, if Apache's document root
-    # concurs with nginx's one
-    #
-    #location ~ /\.ht {
-    #    deny  all;
-    #}
-}
-
-[vagrant@centos ~]$ sudo nginx -t
-nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-nginx: configuration file /etc/nginx/nginx.conf test is successful
-
-
-[vagrant@centos ~]$ sudo nginx -s reload
+	[vagrant@centos ~]$ sudo nginx -s reload
+	```
 
 [vagrant@centos ~]$ curl -a http://localhost/repo/
 <html>
