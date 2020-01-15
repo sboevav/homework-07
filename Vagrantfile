@@ -30,6 +30,8 @@ Vagrant.configure("2") do |config|
           box.vm.provision "shell", inline: <<-SHELL
 #          mkdir -p ~root/.ssh
 #          cp ~vagrant/.ssh/auth* ~root/.ssh
+
+	   sudo yum install -y redhat-lsb-core
            yum install epel-release -y -q
            yum install fish wget -y -q
 # Install tools for building rpm
@@ -39,7 +41,7 @@ Vagrant.configure("2") do |config|
            yum install mock -y -q
            usermod -a -G mock root
 # Install tools for creating your own REPO
-           yum install nginx -y -q
+#           yum install nginx -y -q
            yum install createrepo -y -q
 # Install docker-ce
            sudo yum install -y -q yum-utils links \
@@ -51,6 +53,17 @@ Vagrant.configure("2") do |config|
            yum install docker-ce docker-compose -y -q
            systemctl start docker
            docker run hello-world
+# main homework
+
+wget https://nginx.org/packages/centos/7/SRPMS/nginx-1.14.1-1.el7_4.ngx.src.rpm
+rpmdev-setuptree
+wget https://www.openssl.org/source/latest.tar.gz
+tar -xvf latest.tar.gz
+sudo yum-builddep -y rpmbuild/SPECS/nginx.spec
+sudo rm rpmbuild/SPECS/nginx.spec
+sudo cp /vagrant/nginx.spec rpmbuild/SPECS/nginx.spec
+rpmbuild -bb rpmbuild/SPECS/nginx.spec
+
       SHELL
 
       end
