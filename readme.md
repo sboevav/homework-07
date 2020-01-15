@@ -1,4 +1,3 @@
-# --------------------------------------------------------
 # Установка пакетов
 
 1. Доустановим необходимые для работы пакеты  (redhat-lsb-core, wget, rpmdevtools, rpm-build, createrepo, yum-utils)
@@ -215,7 +214,7 @@
 	-rw-rw-r--. 1 vagrant vagrant 2529284 янв  9 18:10 nginx-debuginfo-1.14.1-1.el7_4.ngx.x86_64.rpm
 	```
 
-9. Теперь установим созданный пакет (Примечание - оказалось, что при развертывании вагранта автоматически устанавливался nginx, поэтому предварительно пришлось его удалить) 
+9. Теперь установим созданный пакет (Примечание - оказалось, что при развертывании вагранта автоматически устанавливался nginx, поэтому предварительно пришлось его удалить)  
 	```bash	
 	[vagrant@centos ~]$ sudo yum localinstall -y rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm
 	Loaded plugins: fastestmirror
@@ -269,31 +268,28 @@
 
 	Complete!
 	```
+10. Запустим nginx и проверим, что он работает
+	```bash	
+	[vagrant@centos ~]$ sudo systemctl start nginx
+	[vagrant@centos ~]$ sudo systemctl status nginx
+	● nginx.service - The nginx HTTP and reverse proxy server
+	   Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
+	   Active: active (running) since Сб 2020-01-11 16:42:53 UTC; 10s ago
+	  Process: 29493 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
+	  Process: 29491 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
+	  Process: 29489 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
+	 Main PID: 29495 (nginx)
+	   CGroup: /system.slice/nginx.service
+		   ├─29495 nginx: master process /usr/sbin/nginx
+		   └─29496 nginx: worker process
 
-
-
-
-
-# --------------------------------------------------------
-[vagrant@centos ~]$ sudo systemctl start nginx
-[vagrant@centos ~]$ sudo systemctl status nginx
-● nginx.service - The nginx HTTP and reverse proxy server
-   Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
-   Active: active (running) since Сб 2020-01-11 16:42:53 UTC; 10s ago
-  Process: 29493 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
-  Process: 29491 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
-  Process: 29489 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
- Main PID: 29495 (nginx)
-   CGroup: /system.slice/nginx.service
-           ├─29495 nginx: master process /usr/sbin/nginx
-           └─29496 nginx: worker process
-
-янв 11 16:42:53 centos systemd[1]: Starting The nginx HTTP and reverse p.....
-янв 11 16:42:53 centos nginx[29491]: nginx: the configuration file /etc/n...k
-янв 11 16:42:53 centos nginx[29491]: nginx: configuration file /etc/nginx...l
-янв 11 16:42:53 centos systemd[1]: Failed to read PID from file /run/ngi...nt
-янв 11 16:42:53 centos systemd[1]: Started The nginx HTTP and reverse pr...r.
-Hint: Some lines were ellipsized, use -l to show in full.
+	янв 11 16:42:53 centos systemd[1]: Starting The nginx HTTP and reverse p.....
+	янв 11 16:42:53 centos nginx[29491]: nginx: the configuration file /etc/n...k
+	янв 11 16:42:53 centos nginx[29491]: nginx: configuration file /etc/nginx...l
+	янв 11 16:42:53 centos systemd[1]: Failed to read PID from file /run/ngi...nt
+	янв 11 16:42:53 centos systemd[1]: Started The nginx HTTP and reverse pr...r.
+	Hint: Some lines were ellipsized, use -l to show in full.
+	```
 
 # --------------------------------------------------------
 [vagrant@centos ~]$ ls /usr/share/nginx/html
