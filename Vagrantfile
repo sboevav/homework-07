@@ -41,7 +41,7 @@ Vagrant.configure("2") do |config|
            yum install mock -y -q
            usermod -a -G mock root
 # Install tools for creating your own REPO
-#           yum install nginx -y -q
+           yum install nginx -y -q
            yum install createrepo -y -q
 # Install docker-ce
            sudo yum install -y -q yum-utils links \
@@ -69,10 +69,9 @@ mkdir rpmbuild/SRPMS
 wget https://www.openssl.org/source/latest.tar.gz
 tar -xvf latest.tar.gz
 
-sudo cp /vagrant/nginx.spec rpmbuild/SPECS/
 sudo yum-builddep -y rpmbuild/SPECS/nginx.spec
-#sudo rm rpmbuild/SPECS/nginx.spec
-#sudo cp /vagrant/nginx.spec rpmbuild/SPECS/
+sudo rm rpmbuild/SPECS/nginx.spec
+sudo cp /vagrant/nginx.spec rpmbuild/SPECS/
 
 rpmbuild -bb rpmbuild/SPECS/nginx.spec
 sudo yum localinstall -y rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm
