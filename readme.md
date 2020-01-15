@@ -1,7 +1,7 @@
 # --------------------------------------------------------
 # Установка пакетов
 
-1. Доустановим необходимые для работы пакеты  
+1. Доустановим необходимые для работы пакеты  (redhat-lsb-core, wget, rpmdevtools, rpm-build, createrepo, yum-utils)
 		[vagrant@centos ~]$ sudo su  
 		[root@centos vagrant]# yum install -y redhat-lsb-core  
 	```bash	
@@ -25,59 +25,58 @@
 
 	Complete!
 	```
+Как оказалось остальные пакеты уже предустановлены при развертывании вагранта  
+	```bash	
+	[vagrant@centos ~]$ sudo yum install -y wget
+	Loaded plugins: fastestmirror
+	Loading mirror speeds from cached hostfile
+	 * base: mirror.yandex.ru
+	 * epel: fedora-mirror02.rbc.ru
+	 * extras: dedic.sh
+	 * updates: mirror.logol.ru
+	Package wget-1.14-18.el7_6.1.x86_64 already installed and latest version
+	Nothing to do
+	
+	[vagrant@centos ~]$ sudo yum install -y rpmdevtools
+	Loaded plugins: fastestmirror
+	Loading mirror speeds from cached hostfile
+	 * base: mirror.yandex.ru
+	 * epel: mirror.datacenter.by
+	 * extras: dedic.sh
+	 * updates: mirror.logol.ru
+	Package rpmdevtools-8.3-5.el7.noarch already installed and latest version
+	Nothing to do
 
-[vagrant@centos ~]$ sudo yum install -y wget
-Loaded plugins: fastestmirror
-Loading mirror speeds from cached hostfile
- * base: mirror.yandex.ru
- * epel: fedora-mirror02.rbc.ru
- * extras: dedic.sh
- * updates: mirror.logol.ru
-Package wget-1.14-18.el7_6.1.x86_64 already installed and latest version
-Nothing to do
-[vagrant@centos ~]$ sudo yum install -y rpmdevtools
-Loaded plugins: fastestmirror
-Loading mirror speeds from cached hostfile
- * base: mirror.yandex.ru
- * epel: mirror.datacenter.by
- * extras: dedic.sh
- * updates: mirror.logol.ru
-Package rpmdevtools-8.3-5.el7.noarch already installed and latest version
-Nothing to do
-[vagrant@centos ~]$ 
-[vagrant@centos ~]$ 
-[vagrant@centos ~]$ sudo yum install -y rpm-build
-Loaded plugins: fastestmirror
-Loading mirror speeds from cached hostfile
- * base: mirror.yandex.ru
- * epel: fedora-mirror02.rbc.ru
- * extras: dedic.sh
- * updates: mirror.logol.ru
-Package rpm-build-4.11.3-40.el7.x86_64 already installed and latest version
-Nothing to do
-[vagrant@centos ~]$ sudo yum install -y createrepo
-Loaded plugins: fastestmirror
-Loading mirror speeds from cached hostfile
- * base: mirror.yandex.ru
- * epel: fedora-mirror02.rbc.ru
- * extras: dedic.sh
- * updates: mirror.logol.ru
-Package createrepo-0.9.9-28.el7.noarch already installed and latest version
-Nothing to do
-[vagrant@centos ~]$ sudo yum install -y yum-utils
-Loaded plugins: fastestmirror
-Loading mirror speeds from cached hostfile
- * base: mirror.yandex.ru
- * epel: fedora-mirror02.rbc.ru
- * extras: dedic.sh
- * updates: mirror.logol.ru
-Package yum-utils-1.1.31-52.el7.noarch already installed and latest version
-Nothing to do
-[vagrant@centos ~]$ exit
-exit
+	[vagrant@centos ~]$ sudo yum install -y rpm-build
+	Loaded plugins: fastestmirror
+	Loading mirror speeds from cached hostfile
+	 * base: mirror.yandex.ru
+	 * epel: fedora-mirror02.rbc.ru
+	 * extras: dedic.sh
+	 * updates: mirror.logol.ru
+	Package rpm-build-4.11.3-40.el7.x86_64 already installed and latest version
+	Nothing to do
 
-Script done on Ср 08 янв 2020 16:00:57
-[vagrant@centos ~]$ 
+	[vagrant@centos ~]$ sudo yum install -y createrepo
+	Loaded plugins: fastestmirror
+	Loading mirror speeds from cached hostfile
+	 * base: mirror.yandex.ru
+	 * epel: fedora-mirror02.rbc.ru
+	 * extras: dedic.sh
+	 * updates: mirror.logol.ru
+	Package createrepo-0.9.9-28.el7.noarch already installed and latest version
+	Nothing to do
+
+	[vagrant@centos ~]$ sudo yum install -y yum-utils
+	Loaded plugins: fastestmirror
+	Loading mirror speeds from cached hostfile
+	 * base: mirror.yandex.ru
+	 * epel: fedora-mirror02.rbc.ru
+	 * extras: dedic.sh
+	 * updates: mirror.logol.ru
+	Package yum-utils-1.1.31-52.el7.noarch already installed and latest version
+	Nothing to do
+	```
 
 
 # --------------------------------------------------------
