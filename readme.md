@@ -348,7 +348,7 @@
 	</body>
 	</html>
 	```
-17. Теперь настроим доступ к листингу каталога в NGINX, изменив файл конфигурации по-умолчанию
+17. Теперь настроим доступ к листингу каталога в NGINX, изменив файл конфигурации по-умолчанию (добавим autoindex on)
 	```bash	
 	[vagrant@centos ~]$ sudo vi /etc/nginx/conf.d/default.conf 
 	[vagrant@centos ~]$ cat /etc/nginx/conf.d/default.conf 
@@ -406,36 +406,84 @@
 
 	[vagrant@centos ~]$ sudo nginx -s reload
 	```
+19. Еще раз проверим доступ к листингу каталога
+	```bash	
+	[vagrant@centos ~]$ curl -a http://localhost/repo/
+	<html>
+	<head><title>Index of /repo/</title></head>
+	<body>
+	<h1>Index of /repo/</h1><hr><pre><a href="../">../</a>
+	<a href="repodata/">repodata/</a>                                          11-Jan-2020 16:46                   -
+	<a href="nginx-1.14.1-1.el7_4.ngx.x86_64.rpm">nginx-1.14.1-1.el7_4.ngx.x86_64.rpm</a>                11-Jan-2020 16:44             3598432
+	<a href="percona-release-0.1-6.noarch.rpm">percona-release-0.1-6.noarch.rpm</a>                   13-Jun-2018 06:34               14520
+	</pre><hr></body>
+	</html>
+	```
+20. Протестируем наш репозиторий. Для этого в директорию /etc/yum.repos.d/, содержащую информацию о репозиториях, добавим информацию о нем.
+	```bash	
+	[vagrant@centos ~]$ sudo touch /etc/yum.repos.d/otus.repo
+	[vagrant@centos ~]$ sudo vi /etc/yum.repos.d/otus.repo
+	[vagrant@centos ~]$ cat /etc/yum.repos.d/otus.repo
+	[otus]
+	name=otus-linux
+	baseurl=http://localhost/repo
+	gpgcheck=0
+	enabled=1
+	```
+21. Убедимся что репозиторий подключился
+	```bash	
+	[vagrant@centos ~]$ yum repolist enabled | grep otus
+	otus                     otus-linux                                            2
+	```
+22. Найдем в общем списке наши пакеты
+	```bash	
+	[vagrant@centos ~]$ yum list | grep -e 1.14.1-1.el7_4.ngx -e otus
+	nginx.x86_64                             1:1.14.1-1.el7_4.ngx          installed
+	percona-release.noarch                   0.1-6                         otus     
+	```
+23. Выполним установку пакета percona-release и убедимся, что устанавливается из нашего репозитория otus
+	```bash	
+	[vagrant@centos ~]$ yum install percona-release -y
+	Loaded plugins: fastestmirror
+	You need to be root to perform this command.
+	[vagrant@centos ~]$ sudo yum install percona-release -y
+	Loaded plugins: fastestmirror
+	Loading mirror speeds from cached hostfile
+	 * base: dedic.sh
+	 * epel: fedora-mirror02.rbc.ru
+	 * extras: mirror.docker.ru
+	 * updates: mirror.docker.ru
+	Resolving Dependencies
+	--> Running transaction check
+	---> Package percona-release.noarch 0:0.1-6 will be installed
+	--> Finished Dependency Resolution
 
-[vagrant@centos ~]$ curl -a http://localhost/repo/
-<html>
-<head><title>Index of /repo/</title></head>
-<body>
-<h1>Index of /repo/</h1><hr><pre><a href="../">../</a>
-<a href="repodata/">repodata/</a>                                          11-Jan-2020 16:46                   -
-<a href="nginx-1.14.1-1.el7_4.ngx.x86_64.rpm">nginx-1.14.1-1.el7_4.ngx.x86_64.rpm</a>                11-Jan-2020 16:44             3598432
-<a href="percona-release-0.1-6.noarch.rpm">percona-release-0.1-6.noarch.rpm</a>                   13-Jun-2018 06:34               14520
-</pre><hr></body>
-</html>
+	Dependencies Resolved
 
-# --------------------------------------------------------
-[vagrant@centos ~]$ sudo touch /etc/yum.repos.d/otus.repo
-[vagrant@centos ~]$ sudo vi /etc/yum.repos.d/otus.repo
-[vagrant@centos ~]$ cat /etc/yum.repos.d/otus.repo
-[otus]
-name=otus-linux
-baseurl=http://localhost/repo
-gpgcheck=0
-enabled=1
+	================================================================================
+	 Package                  Arch            Version           Repository     Size
+	================================================================================
+	Installing:
+	 percona-release          noarch          0.1-6             otus           14 k
 
-[vagrant@centos ~]$ yum repolist enabled | grep otus
-otus                     otus-linux                                            2
+	Transaction Summary
+	================================================================================
+	Install  1 Package
 
-[vagrant@centos ~]$ yum list | grep otus
-percona-release.noarch                   0.1-6                         otus     
+	Total download size: 14 k
+	Installed size: 16 k
+	Downloading packages:
+	percona-release-0.1-6.noarch.rpm                           |  14 kB   00:00     
+	Running transaction check
+	Running transaction test
+	Transaction test succeeded
+	Running transaction
+	  Installing : percona-release-0.1-6.noarch                                 1/1 
+	  Verifying  : percona-release-0.1-6.noarch                                 1/1 
 
-# --------------------------------------------------------
-# --------------------------------------------------------
-# --------------------------------------------------------
-# --------------------------------------------------------
+	Installed:
+	  percona-release.noarch 0:0.1-6                                                
+
+	Complete!
+	```
 
