@@ -145,66 +145,70 @@
 	openssl-1.1.1d/util/shlib_wrap.sh.in
 	openssl-1.1.1d/util/su-filter.pl
 	openssl-1.1.1d/util/unlocal_shlib.com.in
+
+	[vagrant@centos ~]$ ls
+	latest.tar.gz  nginx-1.14.1-1.el7_4.ngx.src.rpm  openssl-1.1.1d  rpmbuild
 	```
+6. Установим необходимые зависимости, чтобы в процессе сборки RPM пакета не было ошибок  
+	```bash	
+	[vagrant@centos ~]$ sudo yum-builddep rpmbuild/SPECS/nginx.spec
+	Loaded plugins: fastestmirror
+	Enabling base-source repository
+	Enabling docker-ce-stable-source repository
+	Enabling epel-source repository
+	Enabling extras-source repository
+	Enabling updates-source repository
+	Loading mirror speeds from cached hostfile
+	epel/x86_64/metalink                                     |  25 kB     00:00     
+	epel-source/x86_64/metalink                              |  24 kB     00:00     
+	 * base: dedic.sh
+	 * epel: ftp.lysator.liu.se
+	 * epel-source: ftp.lysator.liu.se
+	 * extras: dedic.sh
+	 * updates: dedic.sh
+	base                                                     | 3.6 kB     00:00     
+	base-source                                              | 2.9 kB     00:00     
+	docker-ce-stable                                         | 3.5 kB     00:00     
+	docker-ce-stable-source                                  | 3.5 kB     00:00     
+	epel                                                     | 5.3 kB     00:00     
+	epel-source                                              | 4.1 kB     00:00     
+	extras                                                   | 2.9 kB     00:00     
+	extras-source                                            | 2.9 kB     00:00     
+	updates                                                  | 2.9 kB     00:00     
+	updates-source                                           | 2.9 kB     00:00     
+	(1/4): epel-source/x86_64/updateinfo                       | 1.0 MB   00:01     
+	(2/4): epel/x86_64/updateinfo                              | 1.0 MB   00:01     
+	(3/4): epel-source/x86_64/primary_db                       | 2.4 MB   00:02     
+	(4/4): epel/x86_64/primary_db                              | 6.9 MB   00:05     
+	Checking for new repos for mirrors
+	Getting requirements for rpmbuild/SPECS/nginx.spec
+	 --> Already installed : redhat-lsb-core-4.1-27.el7.centos.1.x86_64
+	 --> Already installed : systemd-219-62.el7_6.6.x86_64
+	 --> Already installed : 1:openssl-devel-1.0.2k-19.el7.x86_64
+	 --> Already installed : zlib-devel-1.2.7-18.el7.x86_64
+	 --> Already installed : pcre-devel-8.32-17.el7.x86_64
+	No uninstalled build requires
+	```
+7. Изменим nginx.spec, добавив в него опцию поддержки openssl с указанием полного пути до каталога  
+	```bash	
+	[vagrant@centos ~]$ vi rpmbuild/SPECS/nginx.spec
 
-# --------------------------------------------------------
-[vagrant@centos ~]$ sudo yum-builddep rpmbuild/SPECS/nginx.spec
-Loaded plugins: fastestmirror
-Enabling base-source repository
-Enabling docker-ce-stable-source repository
-Enabling epel-source repository
-Enabling extras-source repository
-Enabling updates-source repository
-Loading mirror speeds from cached hostfile
-epel/x86_64/metalink                                     |  25 kB     00:00     
-epel-source/x86_64/metalink                              |  24 kB     00:00     
- * base: dedic.sh
- * epel: ftp.lysator.liu.se
- * epel-source: ftp.lysator.liu.se
- * extras: dedic.sh
- * updates: dedic.sh
-base                                                     | 3.6 kB     00:00     
-base-source                                              | 2.9 kB     00:00     
-docker-ce-stable                                         | 3.5 kB     00:00     
-docker-ce-stable-source                                  | 3.5 kB     00:00     
-epel                                                     | 5.3 kB     00:00     
-epel-source                                              | 4.1 kB     00:00     
-extras                                                   | 2.9 kB     00:00     
-extras-source                                            | 2.9 kB     00:00     
-updates                                                  | 2.9 kB     00:00     
-updates-source                                           | 2.9 kB     00:00     
-(1/4): epel-source/x86_64/updateinfo                       | 1.0 MB   00:01     
-(2/4): epel/x86_64/updateinfo                              | 1.0 MB   00:01     
-(3/4): epel-source/x86_64/primary_db                       | 2.4 MB   00:02     
-(4/4): epel/x86_64/primary_db                              | 6.9 MB   00:05     
-Checking for new repos for mirrors
-Getting requirements for rpmbuild/SPECS/nginx.spec
- --> Already installed : redhat-lsb-core-4.1-27.el7.centos.1.x86_64
- --> Already installed : systemd-219-62.el7_6.6.x86_64
- --> Already installed : 1:openssl-devel-1.0.2k-19.el7.x86_64
- --> Already installed : zlib-devel-1.2.7-18.el7.x86_64
- --> Already installed : pcre-devel-8.32-17.el7.x86_64
-No uninstalled build requires
-[vagrant@centos ~]$ 
-
-# --------------------------------------------------------
-[vagrant@centos ~]$ vi rpmbuild/SPECS/nginx.spec
-
-./configure %{BASE_CONFIGURE_ARGS} \
-    --with-cc-opt="%{WITH_CC_OPT}" \
-    --with-ld-opt="%{WITH_LD_OPT}" \
-    --with-openssl=/home/vagrant/openssl-1.1.1d
-
-# --------------------------------------------------------
-
-[vagrant@centos ~]$ rpmbuild -bb rpmbuild/SPECS/nginx.spec
-...
-Executing(%clean): /bin/sh -e /var/tmp/rpm-tmp.JAg1Bm
-+ umask 022
-+ cd /home/vagrant/rpmbuild/BUILD
-+ cd nginx-1.14.1
-+ /usr/bin/rm -rf /home/vagrant/rpmbuild/BUILDROOT/nginx-1.14.1-1.el7_4.ngx.x86_64
-+ exit 0
+	./configure %{BASE_CONFIGURE_ARGS} \
+	    --with-cc-opt="%{WITH_CC_OPT}" \
+	    --with-ld-opt="%{WITH_LD_OPT}" \
+	    --with-openssl=/home/vagrant/openssl-1.1.1d
+	```
+8. Теперь запустим сборку RPM пакета  
+	```bash	
+	[vagrant@centos ~]$ rpmbuild -bb rpmbuild/SPECS/nginx.spec
+	...
+	Executing(%clean): /bin/sh -e /var/tmp/rpm-tmp.JAg1Bm
+	+ umask 022
+	+ cd /home/vagrant/rpmbuild/BUILD
+	+ cd nginx-1.14.1
+	+ /usr/bin/rm -rf /home/vagrant/rpmbuild/BUILDROOT/nginx-1.14.1-1.el7_4.ngx.x86_64
+	+ exit 0
+	```
 
 
 [vagrant@centos ~]$ ll rpmbuild/RPMS/x86_64/
