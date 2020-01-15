@@ -77,23 +77,37 @@
 	Package yum-utils-1.1.31-52.el7.noarch already installed and latest version
 	Nothing to do
 	```
+3. Не мудрствуя лукаво будем собирать пакет NGINX с поддержкой openssl, предложенный заданием. Для этого скачаем SRPM пакет NGINX  
+	```bash	
+	[vagrant@centos ~]$ wget https://nginx.org/packages/centos/7/SRPMS/nginx-1.14.1-1.el7_4.ngx.src.rpm
+	--2020-01-09 16:53:54--  https://nginx.org/packages/centos/7/SRPMS/nginx-1.14.1-1.el7_4.ngx.src.rpm
+	Resolving nginx.org (nginx.org)... 95.211.80.227, 62.210.92.35, 2001:1af8:4060:a004:21::e3
+	Connecting to nginx.org (nginx.org)|95.211.80.227|:443... connected.
+	HTTP request sent, awaiting response... 200 OK
+	Length: 1033399 (1009K) [application/x-redhat-package-manager]
+	Saving to: ‘nginx-1.14.1-1.el7_4.ngx.src.rpm’
+
+	100%[======================================>] 1 033 399    232KB/s   in 4,4s   
+
+	2020-01-09 16:53:59 (232 KB/s) - ‘nginx-1.14.1-1.el7_4.ngx.src.rpm’ saved [1033399/1033399]
+
+	[vagrant@centos ~]$ ls
+	nginx-1.14.1-1.el7_4.ngx.src.rpm
+	```
+
+4. Создадим командой rpmdev-setuptree каталог со следующими подкаталогами:
+	```bash	
+	+ rpmbuild
+		-BUILD  
+		-BUILDROOT  
+		-RPMS  
+		-SOURCES  
+		-SPECS  
+		-SRPM
+	```
 
 
-# --------------------------------------------------------
-[vagrant@centos ~]$ wget https://nginx.org/packages/centos/7/SRPMS/nginx-1.14.1-1.el7_4.ngx.src.rpm
---2020-01-09 16:53:54--  https://nginx.org/packages/centos/7/SRPMS/nginx-1.14.1-1.el7_4.ngx.src.rpm
-Resolving nginx.org (nginx.org)... 95.211.80.227, 62.210.92.35, 2001:1af8:4060:a004:21::e3
-Connecting to nginx.org (nginx.org)|95.211.80.227|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 1033399 (1009K) [application/x-redhat-package-manager]
-Saving to: ‘nginx-1.14.1-1.el7_4.ngx.src.rpm’
 
-100%[======================================>] 1 033 399    232KB/s   in 4,4s   
-
-2020-01-09 16:53:59 (232 KB/s) - ‘nginx-1.14.1-1.el7_4.ngx.src.rpm’ saved [1033399/1033399]
-
-[vagrant@centos ~]$ ls
-nginx-1.14.1-1.el7_4.ngx.src.rpm
 [vagrant@centos ~]$ rpm -i nginx-1.14.1-1.el7_4.ngx.src.rpm
 warning: nginx-1.14.1-1.el7_4.ngx.src.rpm: Header V4 RSA/SHA1 Signature, key ID 7bd9bf62: NOKEY
 warning: user builder does not exist - using root
