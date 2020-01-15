@@ -95,115 +95,57 @@
 	nginx-1.14.1-1.el7_4.ngx.src.rpm
 	```
 
-4. Создадим командой rpmdev-setuptree каталог со следующими подкаталогами:
+4. Действия ниже нужно выполнять от обычного пользователя, не от root, это очень важный момент! Создадим командой rpmdev-setuptree каталог rpmbuild со следующими подкаталогами:  
 	```bash	
 	+ rpmbuild
 		-BUILD  
-		-BUILDROOT  
 		-RPMS  
 		-SOURCES  
 		-SPECS  
-		-SRPM
+		-SRPMS
+	
+	[vagrant@centos ~]$ rpmdev-setuptree
+	[vagrant@centos ~]$ ll rpmbuild
+	total 0
+	drwxrwxr-x. 2 vagrant vagrant 6 янв 15 15:43 BUILD
+	drwxrwxr-x. 2 vagrant vagrant 6 янв 15 15:43 RPMS
+	drwxrwxr-x. 2 vagrant vagrant 6 янв 15 15:43 SOURCES
+	drwxrwxr-x. 2 vagrant vagrant 6 янв 15 15:43 SPECS
+	drwxrwxr-x. 2 vagrant vagrant 6 янв 15 15:43 SRPMS
 	```
 
+5. Скачаем и разархивируем последние исходники для openssl, которые потребуеются нам при сборке  
+	```bash	
+	[vagrant@centos ~]$ wget https://www.openssl.org/source/latest.tar.gz
+	--2020-01-09 17:33:47--  https://www.openssl.org/source/latest.tar.gz
+	Resolving www.openssl.org (www.openssl.org)... 104.92.90.148, 2a02:26f0:e2:19b::c1e, 2a02:26f0:e2:190::c1e
+	Connecting to www.openssl.org (www.openssl.org)|104.92.90.148|:443... connected.
+	HTTP request sent, awaiting response... 302 Moved Temporarily
+	Location: https://www.openssl.org/source/openssl-1.1.1d.tar.gz [following]
+	--2020-01-09 17:33:48--  https://www.openssl.org/source/openssl-1.1.1d.tar.gz
+	Reusing existing connection to www.openssl.org:443.
+	HTTP request sent, awaiting response... 200 OK
+	Length: 8845861 (8,4M) [application/x-gzip]
+	Saving to: ‘latest.tar.gz’
 
+	100%[======================================>] 8 845 861   5,12MB/s   in 1,6s   
 
-[vagrant@centos ~]$ rpm -i nginx-1.14.1-1.el7_4.ngx.src.rpm
-warning: nginx-1.14.1-1.el7_4.ngx.src.rpm: Header V4 RSA/SHA1 Signature, key ID 7bd9bf62: NOKEY
-warning: user builder does not exist - using root
-warning: group builder does not exist - using root
-warning: user builder does not exist - using root
-warning: group builder does not exist - using root
-warning: user builder does not exist - using root
-warning: group builder does not exist - using root
-warning: user builder does not exist - using root
-warning: group builder does not exist - using root
-warning: user builder does not exist - using root
-warning: group builder does not exist - using root
-warning: user builder does not exist - using root
-warning: group builder does not exist - using root
-warning: user builder does not exist - using root
-warning: group builder does not exist - using root
-warning: user builder does not exist - using root
-warning: group builder does not exist - using root
-warning: user builder does not exist - using root
-warning: group builder does not exist - using root
-warning: user builder does not exist - using root
-warning: group builder does not exist - using root
-warning: user builder does not exist - using root
-warning: group builder does not exist - using root
-warning: user builder does not exist - using root
-warning: group builder does not exist - using root
-warning: user builder does not exist - using root
-warning: group builder does not exist - using root
-warning: user builder does not exist - using root
-warning: group builder does not exist - using root
-[vagrant@centos ~]$ 
-[vagrant@centos ~]$ 
-[vagrant@centos ~]$ ls
-nginx-1.14.1-1.el7_4.ngx.src.rpm  rpmbuild
-[vagrant@centos ~]$ ll rpmbuild
-total 4
-drwxr-xr-x. 2 vagrant vagrant 4096 янв  9 16:54 SOURCES
-drwxr-xr-x. 2 vagrant vagrant   24 янв  9 16:54 SPECS
-[vagrant@centos ~]$ mkdir rpmbuild/BUILD
-[vagrant@centos ~]$ ll rpmbuild
-total 4
-drwxrwxr-x. 2 vagrant vagrant    6 янв  9 16:55 BUILD
-drwxr-xr-x. 2 vagrant vagrant 4096 янв  9 16:54 SOURCES
-drwxr-xr-x. 2 vagrant vagrant   24 янв  9 16:54 SPECS
-[vagrant@centos ~]$ mkdir rpmbuild/BUILDROOT
-[vagrant@centos ~]$ mkdir rpmbuild/RPMS
-[vagrant@centos ~]$ mkdir rpmbuild/SRPMS
-[vagrant@centos ~]$ ll rpmbuild
-total 4
-drwxrwxr-x. 2 vagrant vagrant    6 янв  9 16:55 BUILD
-drwxrwxr-x. 2 vagrant vagrant    6 янв  9 16:56 BUILDROOT
-drwxrwxr-x. 2 vagrant vagrant    6 янв  9 16:56 RPMS
-drwxr-xr-x. 2 vagrant vagrant 4096 янв  9 16:54 SOURCES
-drwxr-xr-x. 2 vagrant vagrant   24 янв  9 16:54 SPECS
-drwxrwxr-x. 2 vagrant vagrant    6 янв  9 16:56 SRPMS
-[vagrant@centos ~]$ 
+	2020-01-09 17:33:50 (5,12 MB/s) - ‘latest.tar.gz’ saved [8845861/8845861]
+	
+	[vagrant@centos ~]$ ls
+	latest.tar.gz  nginx-1.14.1-1.el7_4.ngx.src.rpm  rpmbuild
 
-
-
-[vagrant@centos ~]$ wget https://www.openssl.org/source/latest.tar.gz
---2020-01-09 17:33:47--  https://www.openssl.org/source/latest.tar.gz
-Resolving www.openssl.org (www.openssl.org)... 104.92.90.148, 2a02:26f0:e2:19b::c1e, 2a02:26f0:e2:190::c1e
-Connecting to www.openssl.org (www.openssl.org)|104.92.90.148|:443... connected.
-HTTP request sent, awaiting response... 302 Moved Temporarily
-Location: https://www.openssl.org/source/openssl-1.1.1d.tar.gz [following]
---2020-01-09 17:33:48--  https://www.openssl.org/source/openssl-1.1.1d.tar.gz
-Reusing existing connection to www.openssl.org:443.
-HTTP request sent, awaiting response... 200 OK
-Length: 8845861 (8,4M) [application/x-gzip]
-Saving to: ‘latest.tar.gz’
-
-100%[======================================>] 8 845 861   5,12MB/s   in 1,6s   
-
-2020-01-09 17:33:50 (5,12 MB/s) - ‘latest.tar.gz’ saved [8845861/8845861]
-
-[vagrant@centos ~]$ ls
-latest.tar.gz  nginx-1.14.1-1.el7_4.ngx.src.rpm  rpmbuild
-[vagrant@centos ~]$ 
-
-
-
-
-[vagrant@centos ~]$ tar -xvf latest.tar.gz
-openssl-1.1.1d/
-openssl-1.1.1d/ACKNOWLEDGEMENTS
-openssl-1.1.1d/AUTHORS
-openssl-1.1.1d/CHANGES
-...
-openssl-1.1.1d/util/process_docs.pl
-openssl-1.1.1d/util/shlib_wrap.sh.in
-openssl-1.1.1d/util/su-filter.pl
-openssl-1.1.1d/util/unlocal_shlib.com.in
-[vagrant@centos ~]$ ls
-
-
-
+	[vagrant@centos ~]$ tar -xvf latest.tar.gz
+	openssl-1.1.1d/
+	openssl-1.1.1d/ACKNOWLEDGEMENTS
+	openssl-1.1.1d/AUTHORS
+	openssl-1.1.1d/CHANGES
+	...
+	openssl-1.1.1d/util/process_docs.pl
+	openssl-1.1.1d/util/shlib_wrap.sh.in
+	openssl-1.1.1d/util/su-filter.pl
+	openssl-1.1.1d/util/unlocal_shlib.com.in
+	```
 
 # --------------------------------------------------------
 [vagrant@centos ~]$ sudo yum-builddep rpmbuild/SPECS/nginx.spec
