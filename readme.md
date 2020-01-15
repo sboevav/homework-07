@@ -198,7 +198,7 @@
 	    --with-ld-opt="%{WITH_LD_OPT}" \
 	    --with-openssl=/home/vagrant/openssl-1.1.1d
 	```
-8. Теперь запустим сборку RPM пакета  
+8. Теперь запустим сборку RPM пакета, после чего убедимся, что пакеты создались  
 	```bash	
 	[vagrant@centos ~]$ rpmbuild -bb rpmbuild/SPECS/nginx.spec
 	...
@@ -208,67 +208,67 @@
 	+ cd nginx-1.14.1
 	+ /usr/bin/rm -rf /home/vagrant/rpmbuild/BUILDROOT/nginx-1.14.1-1.el7_4.ngx.x86_64
 	+ exit 0
+
+	[vagrant@centos ~]$ ll rpmbuild/RPMS/x86_64/
+	total 4736
+	-rw-rw-r--. 1 vagrant vagrant 2315012 янв  9 18:10 nginx-1.14.1-1.el7_4.ngx.x86_64.rpm
+	-rw-rw-r--. 1 vagrant vagrant 2529284 янв  9 18:10 nginx-debuginfo-1.14.1-1.el7_4.ngx.x86_64.rpm
 	```
 
+9. Теперь установим созданный пакет (Примечание - оказалось, что при развертывании вагранта автоматически устанавливался nginx, поэтому предварительно пришлось его удалить) 
+	```bash	
+	[vagrant@centos ~]$ sudo yum localinstall -y rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm
+	Loaded plugins: fastestmirror
+	Examining rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm: 1:nginx-1.14.1-1.el7_4.ngx.x86_64
+	Marking rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm to be installed
+	Resolving Dependencies
+	--> Running transaction check
+	---> Package nginx.x86_64 1:1.14.1-1.el7_4.ngx will be installed
+	--> Finished Dependency Resolution
 
-[vagrant@centos ~]$ ll rpmbuild/RPMS/x86_64/
-total 4736
--rw-rw-r--. 1 vagrant vagrant 2315012 янв  9 18:10 nginx-1.14.1-1.el7_4.ngx.x86_64.rpm
--rw-rw-r--. 1 vagrant vagrant 2529284 янв  9 18:10 nginx-debuginfo-1.14.1-1.el7_4.ngx.x86_64.rpm
-[vagrant@centos ~]$ 
+	Dependencies Resolved
 
+	================================================================================
+	 Package
+		Arch    Version                 Repository                         Size
+	================================================================================
+	Installing:
+	 nginx  x86_64  1:1.14.1-1.el7_4.ngx    /nginx-1.14.1-1.el7_4.ngx.x86_64  8.8 M
 
-[vagrant@centos ~]$ sudo yum localinstall -y rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm
-Loaded plugins: fastestmirror
-Examining rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm: 1:nginx-1.14.1-1.el7_4.ngx.x86_64
-Marking rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm to be installed
-Resolving Dependencies
---> Running transaction check
----> Package nginx.x86_64 1:1.14.1-1.el7_4.ngx will be installed
---> Finished Dependency Resolution
+	Transaction Summary
+	================================================================================
+	Install  1 Package
 
-Dependencies Resolved
+	Total size: 8.8 M
+	Installed size: 8.8 M
+	Downloading packages:
+	Running transaction check
+	Running transaction test
+	Transaction test succeeded
+	Running transaction
+	  Installing : 1:nginx-1.14.1-1.el7_4.ngx.x86_64                            1/1 
+	----------------------------------------------------------------------
 
-================================================================================
- Package
-        Arch    Version                 Repository                         Size
-================================================================================
-Installing:
- nginx  x86_64  1:1.14.1-1.el7_4.ngx    /nginx-1.14.1-1.el7_4.ngx.x86_64  8.8 M
+	Thanks for using nginx!
 
-Transaction Summary
-================================================================================
-Install  1 Package
+	Please find the official documentation for nginx here:
+	* http://nginx.org/en/docs/
 
-Total size: 8.8 M
-Installed size: 8.8 M
-Downloading packages:
-Running transaction check
-Running transaction test
-Transaction test succeeded
-Running transaction
-  Installing : 1:nginx-1.14.1-1.el7_4.ngx.x86_64                            1/1 
-----------------------------------------------------------------------
+	Please subscribe to nginx-announce mailing list to get
+	the most important news about nginx:
+	* http://nginx.org/en/support.html
 
-Thanks for using nginx!
+	Commercial subscriptions for nginx are available on:
+	* http://nginx.com/products/
 
-Please find the official documentation for nginx here:
-* http://nginx.org/en/docs/
+	----------------------------------------------------------------------
+	  Verifying  : 1:nginx-1.14.1-1.el7_4.ngx.x86_64                            1/1 
 
-Please subscribe to nginx-announce mailing list to get
-the most important news about nginx:
-* http://nginx.org/en/support.html
+	Installed:
+	  nginx.x86_64 1:1.14.1-1.el7_4.ngx                                             
 
-Commercial subscriptions for nginx are available on:
-* http://nginx.com/products/
-
-----------------------------------------------------------------------
-  Verifying  : 1:nginx-1.14.1-1.el7_4.ngx.x86_64                            1/1 
-
-Installed:
-  nginx.x86_64 1:1.14.1-1.el7_4.ngx                                             
-
-Complete!
+	Complete!
+	```
 
 
 
