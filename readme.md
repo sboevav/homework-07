@@ -26,6 +26,7 @@
 	Complete!
 	```
 Как оказалось остальные пакеты уже предустановлены при развертывании вагранта  
+
 	```bash	
 	[vagrant@centos ~]$ sudo yum install -y wget
 	Loaded plugins: fastestmirror
