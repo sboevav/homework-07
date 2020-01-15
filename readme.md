@@ -371,7 +371,222 @@ total 4736
 -rw-rw-r--. 1 vagrant vagrant 2529284 янв  9 18:10 nginx-debuginfo-1.14.1-1.el7_4.ngx.x86_64.rpm
 [vagrant@centos ~]$ 
 
+
+[vagrant@centos ~]$ sudo yum localinstall -y rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm
+Loaded plugins: fastestmirror
+Examining rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm: 1:nginx-1.14.1-1.el7_4.ngx.x86_64
+Marking rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm to be installed
+Resolving Dependencies
+--> Running transaction check
+---> Package nginx.x86_64 1:1.14.1-1.el7_4.ngx will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+================================================================================
+ Package
+        Arch    Version                 Repository                         Size
+================================================================================
+Installing:
+ nginx  x86_64  1:1.14.1-1.el7_4.ngx    /nginx-1.14.1-1.el7_4.ngx.x86_64  8.8 M
+
+Transaction Summary
+================================================================================
+Install  1 Package
+
+Total size: 8.8 M
+Installed size: 8.8 M
+Downloading packages:
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Installing : 1:nginx-1.14.1-1.el7_4.ngx.x86_64                            1/1 
+----------------------------------------------------------------------
+
+Thanks for using nginx!
+
+Please find the official documentation for nginx here:
+* http://nginx.org/en/docs/
+
+Please subscribe to nginx-announce mailing list to get
+the most important news about nginx:
+* http://nginx.org/en/support.html
+
+Commercial subscriptions for nginx are available on:
+* http://nginx.com/products/
+
+----------------------------------------------------------------------
+  Verifying  : 1:nginx-1.14.1-1.el7_4.ngx.x86_64                            1/1 
+
+Installed:
+  nginx.x86_64 1:1.14.1-1.el7_4.ngx                                             
+
+Complete!
+
+
+
+
+
 # --------------------------------------------------------
+[vagrant@centos ~]$ sudo systemctl start nginx
+[vagrant@centos ~]$ sudo systemctl status nginx
+● nginx.service - The nginx HTTP and reverse proxy server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
+   Active: active (running) since Сб 2020-01-11 16:42:53 UTC; 10s ago
+  Process: 29493 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
+  Process: 29491 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
+  Process: 29489 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
+ Main PID: 29495 (nginx)
+   CGroup: /system.slice/nginx.service
+           ├─29495 nginx: master process /usr/sbin/nginx
+           └─29496 nginx: worker process
+
+янв 11 16:42:53 centos systemd[1]: Starting The nginx HTTP and reverse p.....
+янв 11 16:42:53 centos nginx[29491]: nginx: the configuration file /etc/n...k
+янв 11 16:42:53 centos nginx[29491]: nginx: configuration file /etc/nginx...l
+янв 11 16:42:53 centos systemd[1]: Failed to read PID from file /run/ngi...nt
+янв 11 16:42:53 centos systemd[1]: Started The nginx HTTP and reverse pr...r.
+Hint: Some lines were ellipsized, use -l to show in full.
+
+# --------------------------------------------------------
+[vagrant@centos ~]$ ls /usr/share/nginx/html
+404.html  en-US  img         nginx-logo.png
+50x.html  icons  index.html  poweredby.png
+[vagrant@centos ~]$ mkdir /usr/share/nginx/html/repo
+mkdir: cannot create directory ‘/usr/share/nginx/html/repo’: Permission denied
+[vagrant@centos ~]$ sudo mkdir /usr/share/nginx/html/repo
+[vagrant@centos ~]$ ls /usr/share/nginx/html
+404.html  en-US  img         nginx-logo.png  repo
+50x.html  icons  index.html  poweredby.png
+[vagrant@centos ~]$ 
+[vagrant@centos ~]$ 
+[vagrant@centos ~]$ cp rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm /usr/share/nginx/html/repo/
+cp: cannot create regular file ‘/usr/share/nginx/html/repo/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm’: Permission denied
+[vagrant@centos ~]$ sudo cp rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm /usr/share/nginx/html/repo/
+[vagrant@centos ~]$ sudo wget http://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm -O /usr/share/nginx/html/repo/percona-release-0.1-6.noarch.rpm
+--2020-01-11 16:45:16--  http://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm
+Resolving www.percona.com (www.percona.com)... 74.121.199.234
+Connecting to www.percona.com (www.percona.com)|74.121.199.234|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm [following]
+--2020-01-11 16:45:17--  https://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm
+Connecting to www.percona.com (www.percona.com)|74.121.199.234|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 14520 (14K) [application/x-redhat-package-manager]
+Saving to: ‘/usr/share/nginx/html/repo/percona-release-0.1-6.noarch.rpm’
+
+100%[======================================>] 14 520      --.-K/s   in 0,1s    
+
+2020-01-11 16:45:18 (97,7 KB/s) - ‘/usr/share/nginx/html/repo/percona-release-0.1-6.noarch.rpm’ saved [14520/14520]
+
+[vagrant@centos ~]$ ls /usr/share/nginx/html/repo
+nginx-1.14.1-1.el7_4.ngx.x86_64.rpm  percona-release-0.1-6.noarch.rpm
+[vagrant@centos ~]$ 
+
+# --------------------------------------------------------
+[vagrant@centos ~]$ sudo createrepo /usr/share/nginx/html/repo/
+Spawning worker 0 with 2 pkgs
+Workers Finished
+Saving Primary metadata
+Saving file lists metadata
+Saving other metadata
+Generating sqlite DBs
+Sqlite DBs complete
+[vagrant@centos ~]$ 
+# --------------------------------------------------------
+
+[vagrant@centos ~]$ curl -a http://localhost/repo/
+<html>
+<head><title>403 Forbidden</title></head>
+<body>
+<center><h1>403 Forbidden</h1></center>
+<hr><center>nginx/1.16.1</center>
+</body>
+</html>
+
+[vagrant@centos ~]$ sudo vi /etc/nginx/conf.d/default.conf 
+[vagrant@centos ~]$ cat /etc/nginx/conf.d/default.conf 
+server {
+    listen       80;
+    server_name  localhost;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+	autoindex on;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    #location ~ \.php$ {
+    #    root           html;
+    #    fastcgi_pass   127.0.0.1:9000;
+    #    fastcgi_index  index.php;
+    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+    #    include        fastcgi_params;
+    #}
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
+
+[vagrant@centos ~]$ sudo nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+
+[vagrant@centos ~]$ sudo nginx -s reload
+
+[vagrant@centos ~]$ curl -a http://localhost/repo/
+<html>
+<head><title>Index of /repo/</title></head>
+<body>
+<h1>Index of /repo/</h1><hr><pre><a href="../">../</a>
+<a href="repodata/">repodata/</a>                                          11-Jan-2020 16:46                   -
+<a href="nginx-1.14.1-1.el7_4.ngx.x86_64.rpm">nginx-1.14.1-1.el7_4.ngx.x86_64.rpm</a>                11-Jan-2020 16:44             3598432
+<a href="percona-release-0.1-6.noarch.rpm">percona-release-0.1-6.noarch.rpm</a>                   13-Jun-2018 06:34               14520
+</pre><hr></body>
+</html>
+
+# --------------------------------------------------------
+[vagrant@centos ~]$ sudo touch /etc/yum.repos.d/otus.repo
+[vagrant@centos ~]$ sudo vi /etc/yum.repos.d/otus.repo
+[vagrant@centos ~]$ cat /etc/yum.repos.d/otus.repo
+[otus]
+name=otus-linux
+baseurl=http://localhost/repo
+gpgcheck=0
+enabled=1
+
+[vagrant@centos ~]$ yum repolist enabled | grep otus
+otus                     otus-linux                                            2
+
+[vagrant@centos ~]$ yum list | grep otus
+percona-release.noarch                   0.1-6                         otus     
+
 # --------------------------------------------------------
 # --------------------------------------------------------
 # --------------------------------------------------------
