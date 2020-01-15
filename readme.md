@@ -290,41 +290,41 @@
 	янв 11 16:42:53 centos systemd[1]: Started The nginx HTTP and reverse pr...r.
 	Hint: Some lines were ellipsized, use -l to show in full.
 	```
+11. Создадим свой репозитарий. Для этого создадим каталог repo в директории /usr/share/nginx/html (это каталог для статики у NGINX по умолчанию)
+	```bash	
+	[vagrant@centos ~]$ sudo mkdir /usr/share/nginx/html/repo
+	[vagrant@centos ~]$ ls /usr/share/nginx/html
+	404.html  en-US  img         nginx-logo.png  repo
+	50x.html  icons  index.html  poweredby.png
+	```
 
-# --------------------------------------------------------
-[vagrant@centos ~]$ ls /usr/share/nginx/html
-404.html  en-US  img         nginx-logo.png
-50x.html  icons  index.html  poweredby.png
-[vagrant@centos ~]$ mkdir /usr/share/nginx/html/repo
-mkdir: cannot create directory ‘/usr/share/nginx/html/repo’: Permission denied
-[vagrant@centos ~]$ sudo mkdir /usr/share/nginx/html/repo
-[vagrant@centos ~]$ ls /usr/share/nginx/html
-404.html  en-US  img         nginx-logo.png  repo
-50x.html  icons  index.html  poweredby.png
-[vagrant@centos ~]$ 
-[vagrant@centos ~]$ 
-[vagrant@centos ~]$ cp rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm /usr/share/nginx/html/repo/
-cp: cannot create regular file ‘/usr/share/nginx/html/repo/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm’: Permission denied
-[vagrant@centos ~]$ sudo cp rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm /usr/share/nginx/html/repo/
-[vagrant@centos ~]$ sudo wget http://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm -O /usr/share/nginx/html/repo/percona-release-0.1-6.noarch.rpm
---2020-01-11 16:45:16--  http://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm
-Resolving www.percona.com (www.percona.com)... 74.121.199.234
-Connecting to www.percona.com (www.percona.com)|74.121.199.234|:80... connected.
-HTTP request sent, awaiting response... 301 Moved Permanently
-Location: https://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm [following]
---2020-01-11 16:45:17--  https://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm
-Connecting to www.percona.com (www.percona.com)|74.121.199.234|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 14520 (14K) [application/x-redhat-package-manager]
-Saving to: ‘/usr/share/nginx/html/repo/percona-release-0.1-6.noarch.rpm’
+12. Скопируем в созданный каталого наш созданный RPM пакет nginx
+	```bash	
+	[vagrant@centos ~]$ sudo cp rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm /usr/share/nginx/html/repo/
+	```
 
-100%[======================================>] 14 520      --.-K/s   in 0,1s    
+13. Дополнительно скопируем в этот каталог еще один RPM пакет (сделаем как в примере - RPM пакет репозитория Percona-Server)
+	```bash	
+	[vagrant@centos ~]$ sudo wget http://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm -O /usr/share/nginx/html/repo/percona-release-0.1-6.noarch.rpm
+	--2020-01-11 16:45:16--  http://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm
+	Resolving www.percona.com (www.percona.com)... 74.121.199.234
+	Connecting to www.percona.com (www.percona.com)|74.121.199.234|:80... connected.
+	HTTP request sent, awaiting response... 301 Moved Permanently
+	Location: https://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm [following]
+	--2020-01-11 16:45:17--  https://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm
+	Connecting to www.percona.com (www.percona.com)|74.121.199.234|:443... connected.
+	HTTP request sent, awaiting response... 200 OK
+	Length: 14520 (14K) [application/x-redhat-package-manager]
+	Saving to: ‘/usr/share/nginx/html/repo/percona-release-0.1-6.noarch.rpm’
 
-2020-01-11 16:45:18 (97,7 KB/s) - ‘/usr/share/nginx/html/repo/percona-release-0.1-6.noarch.rpm’ saved [14520/14520]
+	100%[======================================>] 14 520      --.-K/s   in 0,1s    
 
-[vagrant@centos ~]$ ls /usr/share/nginx/html/repo
-nginx-1.14.1-1.el7_4.ngx.x86_64.rpm  percona-release-0.1-6.noarch.rpm
-[vagrant@centos ~]$ 
+	2020-01-11 16:45:18 (97,7 KB/s) - ‘/usr/share/nginx/html/repo/percona-release-0.1-6.noarch.rpm’ saved [14520/14520]
+
+	[vagrant@centos ~]$ ls /usr/share/nginx/html/repo
+	nginx-1.14.1-1.el7_4.ngx.x86_64.rpm  percona-release-0.1-6.noarch.rpm
+	```
+
 
 # --------------------------------------------------------
 [vagrant@centos ~]$ sudo createrepo /usr/share/nginx/html/repo/
