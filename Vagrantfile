@@ -45,19 +45,27 @@ Vagrant.configure("2") do |config|
            yum install createrepo -y -q
 # Install docker-ce
            sudo yum install -y -q yum-utils links \
-           device-mapper-persistent-data \
-           lvm2
-           sudo yum-config-manager \
-           --add-repo \
-           https://download.docker.com/linux/centos/docker-ce.repo
-           yum install docker-ce docker-compose -y -q
-           systemctl start docker
-           docker run hello-world
+#           device-mapper-persistent-data \
+#           lvm2
+#           sudo yum-config-manager \
+#           --add-repo \
+#           https://download.docker.com/linux/centos/docker-ce.repo
+#           yum install docker-ce docker-compose -y -q
+#           systemctl start docker
+#           docker run hello-world
 
 # main homework
 
 wget https://nginx.org/packages/centos/7/SRPMS/nginx-1.14.1-1.el7_4.ngx.src.rpm
-rpmdev-setuptree
+#/home/vagrant
+mkdir rpmbuild
+mkdir rpmbuild/BUILD
+mkdir rpmbuild/BUILDROOT
+mkdir rpmbuild/RPMS
+mkdir rpmbuild/SOURCES
+mkdir rpmbuild/SPECS
+mkdir rpmbuild/SRPMS
+#rpmdev-setuptree
 wget https://www.openssl.org/source/latest.tar.gz
 tar -xvf latest.tar.gz
 sudo yum-builddep -y rpmbuild/SPECS/nginx.spec
