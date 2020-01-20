@@ -94,23 +94,29 @@
 	nginx-1.14.1-1.el7_4.ngx.src.rpm
 	```
 
-4. Действия по сборке пакета нужно выполнять от обычного пользователя, не от root, это очень важный момент! Гугль жутко не советует собирать пакеты под рутом, т.к. потом могут появиться проблемы при установке пакетов. Создадим командой rpmdev-setuptree каталог rpmbuild со следующими подкаталогами:  
+4. Действия по сборке пакета нужно выполнять от обычного пользователя, не от root, это очень важный момент! Гугль жутко не советует собирать пакеты под рутом, т.к. потом могут появиться проблемы при установке пакетов. Создадим указанное ниже дерево каталогов для сборки пакета:  
 	```bash	
 	+ rpmbuild
 		-BUILD  
+		-BUILDROOT
 		-RPMS  
 		-SOURCES  
 		-SPECS  
 		-SRPMS
-	
-	[vagrant@centos ~]$ rpmdev-setuptree
+
+	[vagrant@centos ~]$ rpm -i nginx-1.14.1-1.el7_4.ngx.src.rpm
+	[vagrant@centos ~]$ mkdir rpmbuild/BUILD
+	[vagrant@centos ~]$ mkdir rpmbuild/BUILDROOT
+	[vagrant@centos ~]$ mkdir rpmbuild/RPMS
+	[vagrant@centos ~]$ mkdir rpmbuild/SRPMS
 	[vagrant@centos ~]$ ll rpmbuild
-	total 0
-	drwxrwxr-x. 2 vagrant vagrant 6 янв 15 15:43 BUILD
-	drwxrwxr-x. 2 vagrant vagrant 6 янв 15 15:43 RPMS
-	drwxrwxr-x. 2 vagrant vagrant 6 янв 15 15:43 SOURCES
-	drwxrwxr-x. 2 vagrant vagrant 6 янв 15 15:43 SPECS
-	drwxrwxr-x. 2 vagrant vagrant 6 янв 15 15:43 SRPMS
+	total 4
+	drwxrwxr-x. 2 vagrant vagrant    6 янв 18 18:37 BUILD
+	drwxrwxr-x. 2 vagrant vagrant    6 янв 18 18:37 BUILDROOT
+	drwxrwxr-x. 2 vagrant vagrant    6 янв 18 18:38 RPMS
+	drwxr-xr-x. 2 vagrant vagrant 4096 янв 18 18:37 SOURCES
+	drwxr-xr-x. 2 vagrant vagrant   24 янв 18 18:40 SPECS
+	drwxrwxr-x. 2 vagrant vagrant    6 янв 18 18:38 SRPMS
 	```
 
 5. Скачаем и разархивируем последние исходники для openssl, которые потребуются нам при сборке  
@@ -151,42 +157,27 @@
 6. Установим необходимые зависимости, чтобы в процессе сборки RPM пакета не было ошибок  
 	```bash	
 	[vagrant@centos ~]$ sudo yum-builddep rpmbuild/SPECS/nginx.spec
-	Loaded plugins: fastestmirror
-	Enabling base-source repository
-	Enabling docker-ce-stable-source repository
-	Enabling epel-source repository
-	Enabling extras-source repository
-	Enabling updates-source repository
-	Loading mirror speeds from cached hostfile
-	epel/x86_64/metalink                                     |  25 kB     00:00     
-	epel-source/x86_64/metalink                              |  24 kB     00:00     
-	 * base: dedic.sh
-	 * epel: ftp.lysator.liu.se
-	 * epel-source: ftp.lysator.liu.se
-	 * extras: dedic.sh
-	 * updates: dedic.sh
-	base                                                     | 3.6 kB     00:00     
-	base-source                                              | 2.9 kB     00:00     
-	docker-ce-stable                                         | 3.5 kB     00:00     
-	docker-ce-stable-source                                  | 3.5 kB     00:00     
-	epel                                                     | 5.3 kB     00:00     
-	epel-source                                              | 4.1 kB     00:00     
-	extras                                                   | 2.9 kB     00:00     
-	extras-source                                            | 2.9 kB     00:00     
-	updates                                                  | 2.9 kB     00:00     
-	updates-source                                           | 2.9 kB     00:00     
-	(1/4): epel-source/x86_64/updateinfo                       | 1.0 MB   00:01     
-	(2/4): epel/x86_64/updateinfo                              | 1.0 MB   00:01     
-	(3/4): epel-source/x86_64/primary_db                       | 2.4 MB   00:02     
-	(4/4): epel/x86_64/primary_db                              | 6.9 MB   00:05     
-	Checking for new repos for mirrors
-	Getting requirements for rpmbuild/SPECS/nginx.spec
-	 --> Already installed : redhat-lsb-core-4.1-27.el7.centos.1.x86_64
-	 --> Already installed : systemd-219-62.el7_6.6.x86_64
-	 --> Already installed : 1:openssl-devel-1.0.2k-19.el7.x86_64
-	 --> Already installed : zlib-devel-1.2.7-18.el7.x86_64
-	 --> Already installed : pcre-devel-8.32-17.el7.x86_64
-	No uninstalled build requires
+	...
+	Installed:
+	  openssl-devel.x86_64 1:1.0.2k-19.el7      pcre-devel.x86_64 0:8.32-17.el7     
+	  zlib-devel.x86_64 0:1.2.7-18.el7         
+
+	Dependency Installed:
+	  keyutils-libs-devel.x86_64 0:1.5.8-3.el7                                      
+	  krb5-devel.x86_64 0:1.15.1-37.el7_7.2                                         
+	  libcom_err-devel.x86_64 0:1.42.9-16.el7                                       
+	  libkadm5.x86_64 0:1.15.1-37.el7_7.2                                           
+	  libselinux-devel.x86_64 0:2.5-14.1.el7                                        
+	  libsepol-devel.x86_64 0:2.5-10.el7                                            
+	  libverto-devel.x86_64 0:0.2.5-4.el7                                           
+
+	Dependency Updated:
+	  e2fsprogs.x86_64 0:1.42.9-16.el7       e2fsprogs-libs.x86_64 0:1.42.9-16.el7  
+	  krb5-libs.x86_64 0:1.15.1-37.el7_7.2   libcom_err.x86_64 0:1.42.9-16.el7      
+	  libss.x86_64 0:1.42.9-16.el7           openssl.x86_64 1:1.0.2k-19.el7         
+	  openssl-libs.x86_64 1:1.0.2k-19.el7   
+
+	Complete!
 	```
 7. Изменим nginx.spec, добавив в него опцию поддержки openssl с указанием полного пути до каталога  
 	```bash	
@@ -216,6 +207,21 @@
 
 9. Теперь установим созданный пакет от имени привилегированного пользователя (Примечание - оказалось, что при развертывании вагранта автоматически устанавливался nginx, поэтому предварительно пришлось его удалить)  
 	```bash	
+	[vagrant@centos ~]$ sudo yum remove nginx -y
+	...	
+	Removed:
+	  nginx.x86_64 1:1.16.1-1.el7                                                   
+
+	Dependency Removed:
+	  nginx-all-modules.noarch 1:1.16.1-1.el7                                       
+	  nginx-mod-http-image-filter.x86_64 1:1.16.1-1.el7                             
+	  nginx-mod-http-perl.x86_64 1:1.16.1-1.el7                                     
+	  nginx-mod-http-xslt-filter.x86_64 1:1.16.1-1.el7                              
+	  nginx-mod-mail.x86_64 1:1.16.1-1.el7                                          
+	  nginx-mod-stream.x86_64 1:1.16.1-1.el7                                        
+
+	Complete!
+
 	[vagrant@centos ~]$ sudo yum localinstall -y rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm
 	Loaded plugins: fastestmirror
 	Examining rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm: 1:nginx-1.14.1-1.el7_4.ngx.x86_64
@@ -303,28 +309,29 @@
 	[vagrant@centos ~]$ sudo cp rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm /usr/share/nginx/html/repo/
 	```
 
-13. Дополнительно скопируем в этот каталог еще один RPM пакет (сделаем как в примере - RPM пакет репозитория Percona-Server)
+13. Дополнительно скопируем в этот каталог еще один RPM пакет (сделаем как в примере - RPM пакет репозитория Percona-Server, только возьмем последнюю версию)
 	```bash	
-	[vagrant@centos ~]$ sudo wget http://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm -O /usr/share/nginx/html/repo/percona-release-0.1-6.noarch.rpm
-	--2020-01-11 16:45:16--  http://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm
+	[vagrant@centos ~]$ sudo wget https://www.percona.com/downloads/percona-release/redhat/LATEST/ -O /usr/share/nginx/html/repo/percona-release-latest.noarch.rpm
+	--2020-01-18 19:06:08--  https://www.percona.com/downloads/percona-release/redhat/LATEST/
 	Resolving www.percona.com (www.percona.com)... 74.121.199.234
-	Connecting to www.percona.com (www.percona.com)|74.121.199.234|:80... connected.
-	HTTP request sent, awaiting response... 301 Moved Permanently
-	Location: https://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm [following]
-	--2020-01-11 16:45:17--  https://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm
 	Connecting to www.percona.com (www.percona.com)|74.121.199.234|:443... connected.
+	HTTP request sent, awaiting response... 301 Moved Permanently
+	Location: https://repo.percona.com/yum/percona-release-latest.noarch.rpm [following]
+	--2020-01-18 19:06:09--  https://repo.percona.com/yum/percona-release-latest.noarch.rpm
+	Resolving repo.percona.com (repo.percona.com)... 157.245.68.135
+	Connecting to repo.percona.com (repo.percona.com)|157.245.68.135|:443... connected.
 	HTTP request sent, awaiting response... 200 OK
-	Length: 14520 (14K) [application/x-redhat-package-manager]
-	Saving to: ‘/usr/share/nginx/html/repo/percona-release-0.1-6.noarch.rpm’
+	Length: 17144 (17K) [application/x-redhat-package-manager]
+	Saving to: ‘/usr/share/nginx/html/repo/percona-release-latest.noarch.rpm’
 
-	100%[======================================>] 14 520      --.-K/s   in 0,1s    
+	100%[======================================>] 17 144      --.-K/s   in 0s      
 
-	2020-01-11 16:45:18 (97,7 KB/s) - ‘/usr/share/nginx/html/repo/percona-release-0.1-6.noarch.rpm’ saved [14520/14520]
+	2020-01-18 19:06:10 (41,5 MB/s) - ‘/usr/share/nginx/html/repo/percona-release-latest.noarch.rpm’ saved [17144/17144]
 	```
 14. Проверим, что оба пакета на месте
 	```bash	
 	[vagrant@centos ~]$ ls /usr/share/nginx/html/repo
-	nginx-1.14.1-1.el7_4.ngx.x86_64.rpm  percona-release-0.1-6.noarch.rpm
+	nginx-1.14.1-1.el7_4.ngx.x86_64.rpm  percona-release-latest.noarch.rpm
 	```
 15. Создадим репозиторий. Эта часть уже делается от более привилегированного пользователя
 	```bash	
@@ -411,11 +418,11 @@
 	[vagrant@centos ~]$ curl -a http://localhost/repo/
 	<html>
 	<head><title>Index of /repo/</title></head>
-	<body>
+	<body bgcolor="white">
 	<h1>Index of /repo/</h1><hr><pre><a href="../">../</a>
-	<a href="repodata/">repodata/</a>                                          11-Jan-2020 16:46                   -
-	<a href="nginx-1.14.1-1.el7_4.ngx.x86_64.rpm">nginx-1.14.1-1.el7_4.ngx.x86_64.rpm</a>                11-Jan-2020 16:44             3598432
-	<a href="percona-release-0.1-6.noarch.rpm">percona-release-0.1-6.noarch.rpm</a>                   13-Jun-2018 06:34               14520
+	<a href="repodata/">repodata/</a>                                          18-Jan-2020 19:08                   -
+	<a href="nginx-1.14.1-1.el7_4.ngx.x86_64.rpm">nginx-1.14.1-1.el7_4.ngx.x86_64.rpm</a>                18-Jan-2020 18:55             3598604
+	<a href="percona-release-latest.noarch.rpm">percona-release-latest.noarch.rpm</a>                  09-Sep-2019 04:58               17144
 	</pre><hr></body>
 	</html>
 	```
@@ -439,20 +446,22 @@
 	```bash	
 	[vagrant@centos ~]$ yum list | grep -e 1.14.1-1.el7_4.ngx -e otus
 	nginx.x86_64                             1:1.14.1-1.el7_4.ngx          installed
-	percona-release.noarch                   0.1-6                         otus     
+	percona-release.noarch                   1.0-13                        otus     
 	```
 23. Выполним установку пакета percona-release и убедимся, что устанавливается из нашего репозитория otus
 	```bash	
 	[vagrant@centos ~]$ sudo yum install percona-release -y
 	Loaded plugins: fastestmirror
 	Loading mirror speeds from cached hostfile
-	 * base: dedic.sh
+	 * base: mirror.docker.ru
 	 * epel: fedora-mirror02.rbc.ru
-	 * extras: mirror.docker.ru
+	 * extras: mirror.tversu.ru
 	 * updates: mirror.docker.ru
+	otus                                                     | 2.9 kB     00:00     
+	otus/primary_db                                            | 3.1 kB   00:00     
 	Resolving Dependencies
 	--> Running transaction check
-	---> Package percona-release.noarch 0:0.1-6 will be installed
+	---> Package percona-release.noarch 0:1.0-13 will be installed
 	--> Finished Dependency Resolution
 
 	Dependencies Resolved
@@ -461,25 +470,38 @@
 	 Package                  Arch            Version           Repository     Size
 	================================================================================
 	Installing:
-	 percona-release          noarch          0.1-6             otus           14 k
+	 percona-release          noarch          1.0-13            otus           17 k
 
 	Transaction Summary
 	================================================================================
 	Install  1 Package
 
-	Total download size: 14 k
-	Installed size: 16 k
+	Total download size: 17 k
+	Installed size: 20 k
 	Downloading packages:
-	percona-release-0.1-6.noarch.rpm                           |  14 kB   00:00     
+	percona-release-latest.noarch.rpm                          |  17 kB   00:00     
 	Running transaction check
 	Running transaction test
 	Transaction test succeeded
 	Running transaction
-	  Installing : percona-release-0.1-6.noarch                                 1/1 
-	  Verifying  : percona-release-0.1-6.noarch                                 1/1 
+	  Installing : percona-release-1.0-13.noarch                                1/1 
+	* Enabling the Percona Original repository
+	<*> All done!
+	The percona-release package now contains a percona-release script that can enable additional repositories for our newer products.
+
+	For example, to enable the Percona Server 8.0 repository use:
+
+	  percona-release setup ps80
+
+	Note: To avoid conflicts with older product versions, the percona-release setup command may disable our original repository for some products.
+
+	For more information, please visit:
+	  https://www.percona.com/doc/percona-repo-config/percona-release.html
+
+	  Verifying  : percona-release-1.0-13.noarch                                1/1 
 
 	Installed:
-	  percona-release.noarch 0:0.1-6                                                
+	  percona-release.noarch 0:1.0-13                                               
 
 	Complete!
 	```

@@ -27,22 +27,23 @@ Vagrant.configure("2") do |config|
             vb.customize ["modifyvm", :id, "--memory", "256"]
           end
 
-          box.vm.provision "shell", inline: <<-SHELL
-#          mkdir -p ~root/.ssh
-#          cp ~vagrant/.ssh/auth* ~root/.ssh
+          
+	  $script = <<-SCRIPT
+           sudo mkdir -p ~root/.ssh
+           sudo cp ~vagrant/.ssh/auth* ~root/.ssh
 
 	   sudo yum install -y redhat-lsb-core
-           yum install epel-release -y -q
-           yum install fish wget -y -q
+           sudo yum install epel-release -y -q
+           sudo yum install fish wget -y -q
 # Install tools for building rpm
-           yum install rpmdevtools rpm-build -y -q
-           yum install tree yum-utils mc wget gcc vim git -y -q
+           sudo yum install rpmdevtools rpm-build -y -q
+           sudo yum install tree yum-utils mc wget gcc vim git -y -q
 # Install tools for building woth mock and make prepares    
-           yum install mock -y -q
-           usermod -a -G mock root
+           sudo yum install mock -y -q
+           sudo usermod -a -G mock root
 # Install tools for creating your own REPO
-           yum install nginx -y -q
-           yum install createrepo -y -q
+           sudo yum install nginx -y -q
+           sudo yum install createrepo -y -q
 # Install docker-ce
            sudo yum install -y -q yum-utils links \
 #           device-mapper-persistent-data \
@@ -55,38 +56,34 @@ Vagrant.configure("2") do |config|
 #           docker run hello-world
 
 # main homework
+		wget https://nginx.org/packages/centos/7/SRPMS/nginx-1.14.1-1.el7_4.ngx.src.rpm
+		rpm -i nginx-1.14.1-1.el7_4.ngx.src.rpm
+		mkdir rpmbuild/BUILD
+		mkdir rpmbuild/BUILDROOT
+		mkdir rpmbuild/RPMS
+		mkdir rpmbuild/SRPMS
+		wget https://www.openssl.org/source/latest.tar.gz
+		tar -xvf latest.tar.gz
+		sudo rm rpmbuild/SPECS/nginx.spec
+		sudo cp /vagrant/nginx.spec rpmbuild/SPECS/
+		sudo yum-builddep -y rpmbuild/SPECS/nginx.spec
+		rpmbuild -bb rpmbuild/SPECS/nginx.spec
+		sudo yum remove nginx -y
+		sudo yum localinstall -y rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm
+		sudo systemctl start nginx
+		sudo mkdir /usr/share/nginx/html/repo
+		sudo cp rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm /usr/share/nginx/html/repo/
+		sudo wget https://www.percona.com/downloads/percona-release/redhat/LATEST/ -O /usr/share/nginx/html/repo/percona-release-latest.noarch.rpm
+		sudo createrepo /usr/share/nginx/html/repo/
+		sudo rm /etc/nginx/conf.d/default.conf
+		sudo cp /vagrant/default.conf /etc/nginx/conf.d/
+		sudo nginx -s reload
+		sudo cp /vagrant/otus.repo /etc/yum.repos.d/
+		sudo yum install percona-release -y
 
-wget https://nginx.org/packages/centos/7/SRPMS/nginx-1.14.1-1.el7_4.ngx.src.rpm
-#/home/vagrant
-mkdir rpmbuild
-mkdir rpmbuild/BUILD
-mkdir rpmbuild/BUILDROOT
-mkdir rpmbuild/RPMS
-mkdir rpmbuild/SOURCES
-mkdir rpmbuild/SPECS
-mkdir rpmbuild/SRPMS
-#rpmdev-setuptree
-wget https://www.openssl.org/source/latest.tar.gz
-tar -xvf latest.tar.gz
 
-sudo yum-builddep -y rpmbuild/SPECS/nginx.spec
-sudo rm rpmbuild/SPECS/nginx.spec
-sudo cp /vagrant/nginx.spec rpmbuild/SPECS/
-
-rpmbuild -bb rpmbuild/SPECS/nginx.spec
-sudo yum localinstall -y rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm
-sudo systemctl start nginx
-sudo mkdir /usr/share/nginx/html/repo
-sudo cp rpmbuild/RPMS/x86_64/nginx-1.14.1-1.el7_4.ngx.x86_64.rpm /usr/share/nginx/html/repo/
-sudo wget http://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm -O /usr/share/nginx/html/repo/percona-release-0.1-6.noarch.rpm
-sudo createrepo /usr/share/nginx/html/repo/
-sudo rm /etc/nginx/conf.d/default.conf
-sudo cp /vagrant/default.conf /etc/nginx/conf.d/
-sudo nginx -s reload
-sudo cp /vagrant/otus.repo /etc/yum.repos.d/
-sudo yum install percona-release -y
-
-      SHELL
+	  SCRIPT
+	  box.vm.provision "shell", inline: $script, privileged: false
 
       end
   end
